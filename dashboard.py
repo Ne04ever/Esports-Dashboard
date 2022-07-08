@@ -27,7 +27,6 @@ def load_data():
     df_players = pd.read_csv('data/highest_earning_players.csv')
     df_players['CountryCode'] = df_players['CountryCode'].apply(lambda x: x.upper())
     df_countries = pd.read_csv('data/country-and-continent-codes-list.csv')
-    #df_game_his['Date'] = pd.to_datetime(df_game_his['Date'])
     return df_countries,df_game_gen,df_game_his,df_teams,df_players
 
 df_countries,df_game_gen,df_game_his,df_teams,df_players = load_data()
@@ -61,7 +60,6 @@ filterd_game = pd.merge(filterd_game, df_game_gen[['Game','Genre']],how='left', 
 
 ###############################################################################
 #Start building Streamlit App
-
    #game_details()
 st.title('Esports Summery(1998 - 2021)')
 st.text("")
@@ -148,6 +146,7 @@ else:
 
 st.header('Player Distribution')
 df_players['CountryCode'] = df_players['CountryCode'].apply(lambda x: x.upper())
+df_countries = df_countries.rename(columns={'Two_Letter_Country_Code':'CountryCode'})
 df = pd.merge(df_players, df_countries,how='left', on='CountryCode')
 player_country = pd.DataFrame(df.groupby('Three_Letter_Country_Code')['PlayerId'].count().sort_values(ascending=False).reset_index())
 player_country = pd.merge(player_country,df[['Three_Letter_Country_Code','Country_Name']],how='left',on = 'Three_Letter_Country_Code')
