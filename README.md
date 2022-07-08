@@ -1,3 +1,3 @@
 # Esports-Dashboard
 Interactive visual dashboard of esports Industry.
-## [Presentation live Environment](https://share.streamlit.io/farrukh-ullah/python_project/streamlit/hr_analytics_main.py)
+## [Presentation live Environment](https://ne04ever-esports-dashboard-dashboard-u16tc6.streamlitapp.com/)
