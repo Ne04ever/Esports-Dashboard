@@ -61,6 +61,7 @@ filterd_game = pd.merge(filterd_game, df_game_gen[['Game','Genre']],how='left', 
 ###############################################################################
 #Start building Streamlit App
    #game_details()
+st.image('data/dino1.gif',use_column_width = 'always')
 st.title('Esports Summery(1998 - 2021)')
 st.text("")
 col1,col2,col3 = st.columns(3)
