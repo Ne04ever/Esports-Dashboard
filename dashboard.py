@@ -138,6 +138,7 @@ if mode1 == 'Teams':
     st.plotly_chart(fig5)
 else:
     df_players['CountryCode'] = df_players['CountryCode'].apply(lambda x: x.upper())
+    df_countries = df_countries.rename(columns={'Two_Letter_Country_Code':'CountryCode'})
     top_players = df_players[df_players['Game'] == games1].sort_values(by='TotalUSDPrize',ascending = False).reset_index().loc[:9]
     top_players = pd.merge(top_players, df_countries,how='left', on='CountryCode')
     fig6 = px.bar(top_players, x='CurrentHandle', y='TotalUSDPrize',hover_name= 'Country_Name',color='TotalUSDPrize',width = 1200,height=500)
