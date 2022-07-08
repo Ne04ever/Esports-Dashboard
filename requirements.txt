@@ -2,7 +2,7 @@
 # $ conda create --name <env> --file <this file>
 # platform: win-64
 numpy
-pandas=1.4.3
+pandas
 pip
 plotly
 spyder
