@@ -129,7 +129,7 @@ df_teams['Game'].value_counts()
     
 st.header('Popular Teams&Players')
 game_tuple = tuple(set(df_teams['Game']))
-games1 = st.selectbox('Select:',game_tuple)
+games1 = st.selectbox('Select Game:',game_tuple)
 mode1 = st.radio(" ",('Teams','Players'))
 st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
 if mode1 == 'Teams':
