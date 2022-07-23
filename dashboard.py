@@ -106,8 +106,8 @@ with col6:
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
     if mode == 'Earnings':
         genre_prize = filterd_game[filterd_game['Genre'] == genres]
-        genre_pool = pd.DataFrame(genre_prize.groupby('year')['Earnings'].sum().reset_index()).sort_values(by = 'year')
-        fig3 = px.line(genre_pool, x="year", y="Earnings")
+        genre_pool = pd.DataFrame(genre_prize.groupby('year').sum().reset_index()).sort_values(by = 'year')
+        fig3 = px.line(genre_pool, x="year", y=genre_pool['Earnings','Tournaments'])
         fig3.update_layout(hovermode="x unified")
         st.plotly_chart(fig3)
     else:
