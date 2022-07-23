@@ -86,13 +86,14 @@ with col4:
     fig1.update_layout(hovermode="x unified")
     st.plotly_chart(fig1)
 with col5:
-    st.header('Genre - Prizepool Distribution')
-    year_5 = reversed(tuple(set(filterd_game['year'])))
-    select_year = st.selectbox('Select year:',year_5)
-    genre_pie_df = filterd_game[filterd_game['year'] == select_year]
-    genre_pie = genre_pie_df[genre_pie_df['year']==select_year] 
-    fig2 = px.pie(genre_pie,values='Earnings',names = 'Genre',color_discrete_sequence=px.colors.sequential.RdBu,hole = .5)
-    st.plotly_chart(fig2)
+    st.header('Popular Games')
+    fields = ('TotalEarnings','TotalTournaments')
+    field = st.selectbox('Select field:',fields)
+    most_popular = df_game_gen.sort_values(by=field,ascending = False).reset_index().loc[:9]
+    gamelist = list(most_popular['Game'])
+    fig4 = px.bar(most_popular,x=field, y='Game',color='Genre')
+    fig4.update_yaxes(categoryorder='array', categoryarray=gamelist)
+    st.plotly_chart(fig4)
 
 
    
@@ -117,14 +118,14 @@ with col6:
         st.plotly_chart(fig3)
     
 with col7:
-    st.header('Popular Games')
-    fields = ('TotalEarnings','TotalTournaments')
-    field = st.selectbox('Select field:',fields)
-    most_popular = df_game_gen.sort_values(by=field,ascending = False).reset_index().loc[:9]
-    gamelist = list(most_popular['Game'])
-    fig4 = px.bar(most_popular,x=field, y='Game',color='Genre')
-    fig4.update_yaxes(categoryorder='array', categoryarray=gamelist)
-    st.plotly_chart(fig4)
+    st.header('Genre - Prizepool Distribution')
+    year_5 = reversed(tuple(set(filterd_game['year'])))
+    select_year = st.selectbox('Select year:',year_5)
+    genre_pie_df = filterd_game[filterd_game['year'] == select_year]
+    genre_pie = genre_pie_df[genre_pie_df['year']==select_year] 
+    fig2 = px.pie(genre_pie,values='Earnings',names = 'Genre',color_discrete_sequence=px.colors.sequential.RdBu,hole = .5)
+    st.plotly_chart(fig2)
+
     
 df_teams['Game'].value_counts()
     
@@ -152,7 +153,7 @@ df_countries = df_countries.rename(columns={'Two_Letter_Country_Code':'CountryCo
 df = pd.merge(df_players, df_countries,how='left', on='CountryCode')
 player_country = pd.DataFrame(df.groupby('Three_Letter_Country_Code')['PlayerId'].count().sort_values(ascending=False).reset_index())
 player_country = pd.merge(player_country,df[['Three_Letter_Country_Code','Country_Name']],how='left',on = 'Three_Letter_Country_Code')
-player_country = player_country.rename(columns={'PlayerId':'Total_Players'})
+player_country = player_country.rename(columns={'PlayerId':'Total_Players','Three_Letter_Country_Code':'Country_Code'})
 plot = px.choropleth(player_country , locations="Three_Letter_Country_Code",color ='Total_Players',hover_name='Country_Name',width = 1200,height=600)
 st.plotly_chart(plot)
 
