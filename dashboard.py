@@ -98,7 +98,7 @@ with col5:
    
 col6,col7 = st.columns(2)
 with col6:
-    st.header('Esports Evolution')
+    st.header('Genre Evolution')
     genre_tuple = ('Fighting','FPP','TPP','Sports','Racing','Strategy','MOBA','Card','Puzzle','BR','RPG')
     genres = st.selectbox('Select genre:',genre_tuple)
     mode = st.radio(" ",('Earnings','Tournaments'))
@@ -152,7 +152,8 @@ df_countries = df_countries.rename(columns={'Two_Letter_Country_Code':'CountryCo
 df = pd.merge(df_players, df_countries,how='left', on='CountryCode')
 player_country = pd.DataFrame(df.groupby('Three_Letter_Country_Code')['PlayerId'].count().sort_values(ascending=False).reset_index())
 player_country = pd.merge(player_country,df[['Three_Letter_Country_Code','Country_Name']],how='left',on = 'Three_Letter_Country_Code')
-plot = px.choropleth(player_country , locations="Three_Letter_Country_Code",color ='PlayerId',hover_name='Country_Name',width = 1200,height=600)
+player_country = player_country.rename(columns={'PlayerId':'Total_Players'}
+plot = px.choropleth(player_country , locations="Three_Letter_Country_Code",color ='Total_Players',hover_name='Country_Name',width = 1200,height=600)
 st.plotly_chart(plot)
 
 
