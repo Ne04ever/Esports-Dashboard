@@ -64,6 +64,26 @@ filterd_game = pd.merge(filterd_game, df_game_gen[['Game','Genre']],how='left', 
 st.image('data/dino1.gif',use_column_width = 'always')
 st.title('Esports Summery(1998 - 2021)')
 st.text("")
+
+st.markdown("""
+<style>
+div[data-testid="metric-container"] {
+   background-color: rgba(28, 131, 225, 0.1);
+   border: 1px solid rgba(28, 131, 225, 0.1);
+   padding: 5% 5% 5% 10%;
+   border-radius: 5px;
+   color: rgb(30, 103, 119);
+   overflow-wrap: break-word;
+}
+
+/* breakline for metric text         */
+div[data-testid="metric-container"] > label[data-testid="stMetricLabel"] > div {
+   overflow-wrap: break-word;
+   white-space: break-spaces;
+}
+</style>
+"""
+, unsafe_allow_html=True)
 metric2020 = filterd_game[df_game_his['year']==2020]
 metric2021 = filterd_game[df_game_his['year']==2021]
 col1,col2,col3 = st.columns(3)
