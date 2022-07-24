@@ -64,13 +64,18 @@ filterd_game = pd.merge(filterd_game, df_game_gen[['Game','Genre']],how='left', 
 st.image('data/dino1.gif',use_column_width = 'always')
 st.title('Esports Summery(1998 - 2021)')
 st.text("")
+metric2020 = filterd_game[df_game_his['year']==2020]
+metric2021 = filterd_game[df_game_his['year']==2021]
 col1,col2,col3 = st.columns(3)
 with col1:
-    st.metric(label= 'Total Number of Tournaments', value = (filterd_game['Tournaments'].sum()))
+    delta1 = (metric2021['Tournaments'].sum() - metric2020['Tournaments'].sum())/metric2020['Tournaments'].sum()
+    st.metric(label= 'Total Number of Tournaments', value = (filterd_game['Tournaments'].sum()), delta = "{:.2%}".format(delta1))
 with col2:
-     st.metric(label= 'Total prizepool(Billions)', value = '{0:.3g}'.format(((filterd_game['Earnings'].sum()/1000000000))))
+    delta2 = ((metric2021['Earnings'].sum() - metric2020['Earnings'].sum())/metric2020['Earnings'].sum())
+    st.metric(label= 'Total prizepool(Billions)', value = '{0:.3g}'.format(((filterd_game['Earnings'].sum()/1000000000))), delta = "{:.2%}".format(delta2))
 with col3:
-    st.metric(label= 'Number of  E-sports players', value = (filterd_game['Players'].sum()))
+    delta3 = ((metric2021['Players'].sum() - metric2020['Players'].sum())/metric2020['Players'].sum())
+    st.metric(label= 'Number of  E-sports players', value = (filterd_game['Players'].sum()), delta = "{:.2%}".format(delta3))
        
 st.text("")     
    
@@ -90,6 +95,7 @@ with col5:
     fields = ('TotalEarnings','TotalTournaments')
     field = st.selectbox('Select field:',fields)
     most_popular = df_game_gen.sort_values(by=field,ascending = False).reset_index().loc[:9]
+    most_popular['Game']=most_popular['Game'].replace(['Counter-Strike: Global Offensive',"PLAYERUNKNOWN’S BATTLEGROUNDS","PLAYERUNKNOWN'S BATTLEGROUNDS Mobile"],['CS GO','PUBG','PUBGM'])
     gamelist = list(most_popular['Game'])
     fig4 = px.bar(most_popular,x=field, y='Game',color='Genre')
     fig4.update_yaxes(categoryorder='array', categoryarray=gamelist)
@@ -99,15 +105,24 @@ with col5:
    
 col6,col7 = st.columns(2)
 with col6:
-    st.header('Genre Evolution')
-    genre_tuple = ('Fighting','FPP','TPP','Sports','Racing','Strategy','MOBA','Card','Puzzle','BR','RPG')
+    st.header('Esports Evolution')
+    genre_tuple = ('MOBA','Fighting','FPP','TPP','Sports','Racing','Strategy','Card','Puzzle','BR','RPG')
     genres = st.selectbox('Select genre:',genre_tuple)
-    genre_prize = filterd_game[filterd_game['Genre'] == genres]
-    genre_pool = pd.DataFrame(genre_prize.groupby('year')['Tournaments'].sum().reset_index()).sort_values(by = 'year')
-    fig3 = px.line(genre_pool, x="year", y="Tournaments")
-    fig3.update_layout(hovermode="x unified")
-    st.plotly_chart(fig3)
-    
+    mode = st.radio(" ",('Tournaments','Earnings'))
+    st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+    if mode == 'Tournaments':
+        genre_prize = filterd_game[filterd_game['Genre'] == genres]
+        genre_pool = pd.DataFrame(genre_prize.groupby('year')['Tournaments'].sum().reset_index()).sort_values(by = 'year')
+        fig3 = px.line(genre_pool, x="year", y="Tournaments")
+        fig3.update_layout(hovermode="x unified")
+        st.plotly_chart(fig3)
+    else:
+        genre_prize = filterd_game[filterd_game['Genre'] == genres]
+        genre_pool = pd.DataFrame(genre_prize.groupby('year')['Earnings'].sum().reset_index()).sort_values(by = 'year')
+        fig3 = px.line(genre_pool, x="year", y="Earnings")
+        fig3.update_layout(hovermode="x unified")
+        st.plotly_chart(fig3)
+       
 with col7:
     st.header('Genre - Prizepool Distribution')
     year_5 = reversed(tuple(set(filterd_game['year'])))
@@ -121,7 +136,10 @@ with col7:
 df_teams['Game'].value_counts()
     
 st.header('Popular Teams&Players')
-game_tuple = tuple(set(df_teams['Game']))
+game_tuple = list(set(df_teams['Game']))
+game_tuple.remove('Dota 2')
+game_tuple.insert(0, 'Dota 2')
+game_tuple = tuple(game_tuple)
 games1 = st.selectbox('Select Game:',game_tuple)
 mode1 = st.radio(" ",('Teams','Players'))
 st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
@@ -147,5 +165,3 @@ player_country = pd.merge(player_country,df[['Three_Letter_Country_Code','Countr
 player_country = player_country.rename(columns={'PlayerId':'Total_Players','Three_Letter_Country_Code':'Country_Code'})
 plot = px.choropleth(player_country , locations="Country_Code",color ='Total_Players',hover_name='Country_Name',width = 1200,height=600)
 st.plotly_chart(plot)
-
-
