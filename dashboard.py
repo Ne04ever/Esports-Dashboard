@@ -117,9 +117,9 @@ with col5:
     most_popular = df_game_gen.sort_values(by=field,ascending = False).reset_index().loc[:9]
     most_popular['Game']=most_popular['Game'].replace(['Counter-Strike: Global Offensive',"PLAYERUNKNOWN’S BATTLEGROUNDS","PLAYERUNKNOWN'S BATTLEGROUNDS Mobile"],['CS GO','PUBG','PUBGM'])
     gamelist = list(most_popular['Game'])
-    fig4 = px.bar(most_popular,x=field, y='Game',color='Genre')
-    fig4.update_yaxes(categoryorder='array', categoryarray=gamelist)
-    st.plotly_chart(fig4)
+    fig2 = px.bar(most_popular,x=field, y='Game',color='Genre')
+    fig2.update_yaxes(categoryorder='array', categoryarray=gamelist)
+    st.plotly_chart(fig2)
 
 
    
@@ -149,8 +149,8 @@ with col7:
     select_year = st.selectbox('Select year:',year_5)
     genre_pie_df = filterd_game[filterd_game['year'] == select_year]
     genre_pie = genre_pie_df[genre_pie_df['year']==select_year] 
-    fig2 = px.pie(genre_pie,values='Earnings',names = 'Genre',color_discrete_sequence=px.colors.sequential.RdBu,hole = .5)
-    st.plotly_chart(fig2)
+    fig4 = px.pie(genre_pie,values='Earnings',names = 'Genre',color_discrete_sequence=px.colors.sequential.RdBu,hole = .5)
+    st.plotly_chart(fig4)
 
     
 df_teams['Game'].value_counts()
@@ -159,21 +159,45 @@ st.header('Popular Teams&Players')
 game_tuple = list(set(df_teams['Game']))
 game_tuple.remove('Dota 2')
 game_tuple.insert(0, 'Dota 2')
+game_tuple.insert(0,'OverAll')
 game_tuple = tuple(game_tuple)
 games1 = st.selectbox('Select Game:',game_tuple)
 mode1 = st.radio(" ",('Teams','Players'))
 st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
 if mode1 == 'Teams':
-    top_teams = df_teams[df_teams['Game'] == games1].sort_values(by='TotalUSDPrize',ascending = False).reset_index().loc[:9]
-    fig5 = px.bar(top_teams,x='TeamName',y='TotalUSDPrize' ,color = 'TotalUSDPrize',hover_name='TotalTournaments',width = 1200,height=500)
-    st.plotly_chart(fig5)
+    if games1 == 'OverAll':
+        best_team = pd.DataFrame(df_teams.groupby('TeamName')['TotalUSDPrize'].sum().sort_values(ascending=False).reset_index().loc[:9])
+        bt_list = list(best_team['TeamName'])
+        best =  pd.DataFrame(df_teams.groupby(['TeamName','Game'])['TotalUSDPrize'].sum().sort_values(ascending=False).reset_index())
+        best = best.loc[best['TeamName'].isin(bt_list)]
+        fig5 = px.bar(best, x='TeamName', y='TotalUSDPrize',color='Game',width = 1200,height=500)
+        st.plotly_chart(fig5)
+    
+    else:
+        top_teams = df_teams[df_teams['Game'] == games1].sort_values(by='TotalUSDPrize',ascending = False).reset_index().loc[:9]
+        fig5 = px.bar(top_teams,x='TeamName',y='TotalUSDPrize' ,color = 'TotalUSDPrize',hover_name='TotalTournaments',width = 1200,height=500)
+        fig5.update_yaxes(ticklabelposition="inside top", title=None)
+        st.plotly_chart(fig5)
 else:
-    df_players['CountryCode'] = df_players['CountryCode'].apply(lambda x: x.upper())
-    df_countries = df_countries.rename(columns={'Two_Letter_Country_Code':'CountryCode'})
-    top_players = df_players[df_players['Game'] == games1].sort_values(by='TotalUSDPrize',ascending = False).reset_index().loc[:9]
-    top_players = pd.merge(top_players, df_countries,how='left', on='CountryCode')
-    fig6 = px.bar(top_players, x='CurrentHandle', y='TotalUSDPrize',hover_name= 'Country_Name',color='TotalUSDPrize',width = 1200,height=500)
-    st.plotly_chart(fig6)
+    if games1 == 'OverAll':
+        best_players = pd.DataFrame(df_players.groupby('CurrentHandle')['TotalUSDPrize'].sum().sort_values(ascending=False).reset_index().loc[:9])
+        bp_list = list(best_players['CurrentHandle'])
+        bestp =  pd.DataFrame(df_players.groupby(['CurrentHandle','Game'])['TotalUSDPrize'].sum().sort_values(ascending=False).reset_index())
+        bestp = bestp.loc[bestp['CurrentHandle'].isin(bp_list)]
+        fig6 = px.bar(bestp, x='CurrentHandle', y='TotalUSDPrize',color='Game',width = 1200,height=500)
+        st.plotly_chart(fig6)
+    
+    else:
+        df_players['CountryCode'] = df_players['CountryCode'].apply(lambda x: x.upper())
+        df_countries = df_countries.rename(columns={'Two_Letter_Country_Code':'CountryCode'})
+        top_players = df_players[df_players['Game'] == games1].sort_values(by='TotalUSDPrize',ascending = False).reset_index().loc[:9]
+        top_players = pd.merge(top_players, df_countries,how='left', on='CountryCode')
+        fig6 = px.bar(top_players, x='CurrentHandle', y='TotalUSDPrize',hover_name= 'Country_Name',color='TotalUSDPrize',width = 1200,height=500)
+        fig6.update_yaxes(ticklabelposition="inside top", title=None)
+        st.plotly_chart(fig6)
+
+
+
 
 
 st.header('Player Distribution')
