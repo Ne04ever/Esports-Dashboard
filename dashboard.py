@@ -170,7 +170,9 @@ if mode1 == 'Teams':
         bt_list = list(best_team['TeamName'])
         best =  pd.DataFrame(df_teams.groupby(['TeamName','Game'])['TotalUSDPrize'].sum().sort_values(ascending=False).reset_index())
         best = best.loc[best['TeamName'].isin(bt_list)]
+        teamlist = list(best['TeamName'])
         fig5 = px.bar(best, x='TeamName', y='TotalUSDPrize',color='Game',width = 1200,height=500)
+        fig5.update_xaxes(categoryorder='array', categoryarray=teamlist)
         st.plotly_chart(fig5)
     
     else:
