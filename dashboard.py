@@ -172,7 +172,7 @@ if mode1 == 'Teams':
         best = best.loc[best['TeamName'].isin(bt_list)]
         teamlist = list(best['TeamName'])
         fig5 = px.bar(best, x='TeamName', y='TotalUSDPrize',color='Game',width = 1200,height=500)
-        fig5.update_yaxes(categoryorder='array', categoryarray=teamlist)
+        fig5.update_layout(barmode='stack', xaxis={'categoryorder':'total descending'})
         st.plotly_chart(fig5)
     
     else:
