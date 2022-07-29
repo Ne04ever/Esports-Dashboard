@@ -172,13 +172,12 @@ if mode1 == 'Teams':
         best = best.loc[best['TeamName'].isin(bt_list)]
         teamlist = list(best['TeamName'])
         fig5 = px.bar(best, x='TeamName', y='TotalUSDPrize',color='Game',width = 1200,height=500)
-        fig5.update_xaxes(categoryorder='array', categoryarray=teamlist)
+        fig5.update_yaxes(categoryorder='array', categoryarray=teamlist)
         st.plotly_chart(fig5)
     
     else:
         top_teams = df_teams[df_teams['Game'] == games1].sort_values(by='TotalUSDPrize',ascending = False).reset_index().loc[:9]
         fig5 = px.bar(top_teams,x='TeamName',y='TotalUSDPrize' ,color = 'TotalUSDPrize',hover_name='TotalTournaments',width = 1200,height=500)
-        fig5.update_yaxes(ticklabelposition="inside top", title=None)
         st.plotly_chart(fig5)
 else:
     if games1 == 'OverAll':
@@ -195,7 +194,6 @@ else:
         top_players = df_players[df_players['Game'] == games1].sort_values(by='TotalUSDPrize',ascending = False).reset_index().loc[:9]
         top_players = pd.merge(top_players, df_countries,how='left', on='CountryCode')
         fig6 = px.bar(top_players, x='CurrentHandle', y='TotalUSDPrize',hover_name= 'Country_Name',color='TotalUSDPrize',width = 1200,height=500)
-        fig6.update_yaxes(ticklabelposition="inside top", title=None)
         st.plotly_chart(fig6)
 
 
