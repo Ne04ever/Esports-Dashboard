@@ -155,7 +155,7 @@ with col7:
     
 df_teams['Game'].value_counts()
     
-st.header('Popular Teams&Players')
+st.header('High Earning Teams&Players')
 game_tuple = list(set(df_teams['Game']))
 game_tuple.remove('Dota 2')
 game_tuple.insert(0, 'Dota 2')
