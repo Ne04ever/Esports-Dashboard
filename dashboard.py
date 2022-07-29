@@ -200,7 +200,7 @@ else:
 
 
 
-st.header('Player Distribution')
+st.header('Champions Distribution')
 df_players['CountryCode'] = df_players['CountryCode'].apply(lambda x: x.upper())
 df_countries = df_countries.rename(columns={'Two_Letter_Country_Code':'CountryCode'})
 df = pd.merge(df_players, df_countries,how='left', on='CountryCode')
